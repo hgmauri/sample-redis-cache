@@ -1,1 +1,0 @@
-# azure-redis-cache
