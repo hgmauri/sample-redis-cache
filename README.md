@@ -1,2 +1,2 @@
-# azure-redis-cache
+#  Azure Redis Cache with the StackExchange package in .NET 5
 Example of using Redis Cache in .NET 5 with StackExchange.Redis
