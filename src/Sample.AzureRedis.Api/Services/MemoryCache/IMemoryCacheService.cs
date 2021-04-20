@@ -2,7 +2,7 @@
 
 namespace Sample.AzureRedis.Api.Services.MemoryCache
 {
-    public interface IMemoryCacheService:IBaseCacheService
+    public interface IMemoryCacheService : IBaseCacheService
     {
     }
 }

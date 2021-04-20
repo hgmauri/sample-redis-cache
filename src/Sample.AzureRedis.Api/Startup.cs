@@ -21,14 +21,15 @@ namespace Sample.AzureRedis.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
-            services.AddSingleton<IRedisCacheService, RedisCacheService>();
             services.AddMemoryCache();
 
             services.AddSingleton<IConnectionMultiplexer>(cm =>
             {
                 return ConnectionMultiplexer.Connect(Configuration.GetConnectionString("RedisConnection"));
             });
+
+            services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
+            services.AddSingleton<IRedisCacheService, RedisCacheService>();
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
