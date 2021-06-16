@@ -23,10 +23,7 @@ namespace Sample.AzureRedis.Api
         {
             services.AddMemoryCache();
 
-            services.AddSingleton<IConnectionMultiplexer>(cm =>
-            {
-                return ConnectionMultiplexer.Connect(Configuration.GetConnectionString("RedisConnection"));
-            });
+            services.AddSingleton<IConnectionMultiplexer>(cm => ConnectionMultiplexer.Connect(Configuration.GetConnectionString("RedisConnection")));
 
             services.AddSingleton<IMemoryCacheService, MemoryCacheService>();
             services.AddSingleton<IRedisCacheService, RedisCacheService>();

@@ -8,6 +8,7 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
     public class RedisCacheService : IRedisCacheService
     {
         private readonly IConnectionMultiplexer _connectionMultiplexer;
+
         public RedisCacheService(IConnectionMultiplexer connectionMultiplexer)
         {
             _connectionMultiplexer = connectionMultiplexer;
