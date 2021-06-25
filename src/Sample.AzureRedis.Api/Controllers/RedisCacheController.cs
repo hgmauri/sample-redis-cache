@@ -9,36 +9,36 @@ namespace Sample.AzureRedis.Api.Controllers
     [ApiController]
     public class RedisCacheController : ControllerBase
     {
-        private readonly IRedisCacheService _baseCacheService;
+        private readonly IRedisCacheService _redisCacheService;
         public RedisCacheController(IRedisCacheService baseCacheService)
         {
-            _baseCacheService = baseCacheService ?? throw new ArgumentNullException(nameof(baseCacheService));
+            _redisCacheService = baseCacheService ?? throw new ArgumentNullException(nameof(baseCacheService));
         }
 
         [HttpPost("{key}")]
         public async Task<ActionResult> AddCacheVAlue(string key, [FromBody] string value)
         {
-            await _baseCacheService.SetValue(key, value);
+            await _redisCacheService.StringSetAsync(key, value);
             return Ok();
         }
 
         [HttpGet("{key}")]
         public async Task<ActionResult<string>> GetCacheValue(string key)
         {
-            return Ok(await _baseCacheService.GetValue<string>(key));
+            return Ok(await _redisCacheService.StringGetAsync<string>(key));
         }
 
         [HttpDelete("{key}")]
         public async Task<ActionResult<string>> DeleteCacheValue(string key)
         {
-            await _baseCacheService.RemoveValue(key);
+            await _redisCacheService.KeyDeleteAsync(key);
             return Ok();
         }
 
         [HttpPost("publish")]
         public async Task<ActionResult<string>> PublishCacheValue([FromBody] string message)
         {
-            await _baseCacheService.PublishMessage(message);
+            await _redisCacheService.PublishAsync("test", message);
             return Ok();
         }
     }

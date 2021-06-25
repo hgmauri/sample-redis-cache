@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sample.AzureRedis.Api.Services.RedisCache;
 using StackExchange.Redis;
 
 namespace Sample.AzureRedis.Worker
@@ -21,6 +22,7 @@ namespace Sample.AzureRedis.Worker
                     {
                         return ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("RedisConnection"));
                     });
+                    services.AddSingleton<IRedisCacheService, RedisCacheService>();
                 });
     }
 }

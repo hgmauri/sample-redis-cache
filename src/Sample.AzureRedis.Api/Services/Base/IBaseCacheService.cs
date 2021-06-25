@@ -5,12 +5,9 @@ namespace Sample.AzureRedis.Api.Services.Base
 {
     public interface IBaseCacheService
     {
-        Task<T> GetValue<T>(string key);
-
-        Task RemoveValue(string key);
-
-        Task SetValue<T>(string key, T value);
-
-        Task SetValue<T>(string key, T value, TimeSpan expirationTimeSpan);
+        Task<T> StringGetAsync<T>(string key) where T : class;
+        Task<bool> StringSetAsync<T>(string key, T value);
+        Task<bool> StringSetAsync<T>(string key, T value, TimeSpan expirationTimeSpan);
+        Task<bool> KeyDeleteAsync(string key);
     }
 }

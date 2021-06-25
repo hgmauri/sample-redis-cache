@@ -6,34 +6,34 @@ namespace Sample.AzureRedis.Api.Services.MemoryCache
 {
     public class MemoryCacheService : IMemoryCacheService
     {
-        private IMemoryCache _memoryCache;
+        private readonly IMemoryCache _memoryCache;
 
         public MemoryCacheService(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
         }
-                
-        public Task<T> GetValue<T>(string key)
+
+        public Task<T> StringGetAsync<T>(string key) where T : class
         {
             return _memoryCache.TryGetValue(key, out T cacheEntry) ? Task.FromResult(cacheEntry) : Task.FromResult<T>(default);
         }
-                
-        public Task RemoveValue(string key)
-        {
-            _memoryCache.Remove(key);
-            return Task.CompletedTask;
-        }
-        
-        public Task SetValue<T>(string key, T value)
+
+        public Task<bool> StringSetAsync<T>(string key, T value)
         {
             _memoryCache.Set(key, value);
-            return Task.CompletedTask;
+            return Task.FromResult(true);
         }
-        
-        public Task SetValue<T>(string key, T value, TimeSpan expirationTimeSpan)
+
+        public Task<bool> StringSetAsync<T>(string key, T value, TimeSpan expirationTimeSpan)
         {
             _memoryCache.Set(key, value, expirationTimeSpan);
-            return Task.CompletedTask;
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> KeyDeleteAsync(string key)
+        {
+            _memoryCache.Remove(key);
+            return Task.FromResult(true);
         }
     }
 }

@@ -3,27 +3,26 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using StackExchange.Redis;
+using Sample.AzureRedis.Api.Services.RedisCache;
 
 namespace Sample.AzureRedis.Worker
 {
     public class Worker : BackgroundService
     {
         private readonly ILogger<Worker> _logger;
-        private readonly IConnectionMultiplexer _connectionMultiplexer;
+        private readonly IRedisCacheService _redisCacheService;
 
-        public Worker(ILogger<Worker> logger, IConnectionMultiplexer connectionMultiplexer)
+        public Worker(ILogger<Worker> logger, IRedisCacheService redisCacheService)
         {
             _logger = logger;
-            _connectionMultiplexer = connectionMultiplexer;
+            _redisCacheService = redisCacheService;
         }
 
         protected override Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            var subscriber = _connectionMultiplexer.GetSubscriber();
-            return subscriber.SubscribeAsync("channelName", (redisChannel, redisValue) =>
+            return _redisCacheService.SubscribeAsync("test", (redisChannel, redisValue) =>
             {
-                _logger.LogInformation($"Message received at {DateTime.UtcNow}");
+                _logger.LogInformation($"Message received at {DateTime.UtcNow} - {redisChannel}");
                 _logger.LogInformation($"\tMessage content: {redisValue}");
             });
         }

@@ -18,20 +18,20 @@ namespace Sample.AzureRedis.Api.Controllers
         [HttpPost("{key}")]
         public async Task<ActionResult> AddCacheVAlue(string key, [FromBody] string value)
         {
-            await _memoryCacheService.SetValue(key, value);
+            await _memoryCacheService.StringSetAsync(key, value);
             return Ok();
         }
 
         [HttpGet("{key}")]
         public async Task<ActionResult<string>> GetCacheValue(string key)
         {
-            return Ok(await _memoryCacheService.GetValue<string>(key));
+            return Ok(await _memoryCacheService.StringGetAsync<string>(key));
         }
 
         [HttpDelete("{key}")]
         public async Task<ActionResult<string>> DeleteCacheValue(string key)
         {
-            await _memoryCacheService.RemoveValue(key);
+            await _memoryCacheService.KeyDeleteAsync(key);
             return Ok();
         }
     }
