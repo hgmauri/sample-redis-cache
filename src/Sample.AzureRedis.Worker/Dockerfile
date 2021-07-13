@@ -4,6 +4,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["src/Sample.AzureRedis.Worker/Sample.AzureRedis.Worker.csproj", "src/Sample.AzureRedis.Worker/"]
+COPY ["src/Sample.AzureRedis.Api/Sample.AzureRedis.Api.csproj", "src/Sample.AzureRedis.Api/"]
 RUN dotnet restore "src/Sample.AzureRedis.Worker/Sample.AzureRedis.Worker.csproj"
 COPY . .
 WORKDIR "/src/src/Sample.AzureRedis.Worker"
