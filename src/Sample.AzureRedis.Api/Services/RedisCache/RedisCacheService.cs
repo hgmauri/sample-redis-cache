@@ -57,8 +57,7 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
             return (await _redisDatabase.ListLeftPopAsync(key)).ToObject<T>();
         }
 
-        public async Task<IEnumerable<T>> PeekRangeAsync<T>(string key, long start = 0, long stop = -1)
-            where T : class
+        public async Task<IEnumerable<T>> PeekRangeAsync<T>(string key, long start = 0, long stop = -1) where T : class
         {
             return (await _redisDatabase.ListRangeAsync(key, start, stop)).ToObjects<T>();
         }
@@ -97,7 +96,7 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
         {
             return await _redisDatabase.SortedSetIncrementAsync(key, member, value);
         }
-        
+
         public async Task<double> SortedSetDecrementAsync(string key, string member, double value)
         {
             return await _redisDatabase.SortedSetDecrementAsync(key, member, value);
@@ -105,25 +104,26 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
 
         public async Task<ConcurrentDictionary<string, double>> SortedSetRangeByRankWithScoresAsync(string key, long start = 0, long stop = -1, Order order = Order.Ascending)
         {
-            return (await _redisDatabase.SortedSetRangeByRankWithScoresAsync(key, start, stop, order)).ToConcurrentDictionary();
+            var result = await _redisDatabase.SortedSetRangeByRankWithScoresAsync(key, start, stop, order);
+            return result.ToConcurrentDictionary();
         }
 
-        public async Task<ConcurrentDictionary<string, double>> SortedSetRangeByScoreWithScoresAsync(string key,
-            double start = double.NegativeInfinity, double stop = double.PositiveInfinity,
-            Exclude exclude = Exclude.None, Order order = Order.Ascending, long skip = 0, long take = -1)
+        public async Task<ConcurrentDictionary<string, double>> SortedSetRangeByScoreWithScoresAsync(string key, double start = double.NegativeInfinity, double stop = double.PositiveInfinity, Exclude exclude = Exclude.None, Order order = Order.Ascending, long skip = 0, long take = -1)
         {
-            return (await _redisDatabase.SortedSetRangeByScoreWithScoresAsync(key, start, stop, exclude, order, skip, take))
-                .ToConcurrentDictionary();
+            var result = await _redisDatabase.SortedSetRangeByScoreWithScoresAsync(key, start, stop, exclude, order, skip, take);
+            return result.ToConcurrentDictionary();
         }
 
         public async Task<ConcurrentDictionary<string, string>> HashGetAsync(string key)
         {
-            return (await _redisDatabase.HashGetAllAsync(key)).ToConcurrentDictionary();
+            var result = await _redisDatabase.HashGetAllAsync(key);
+            return result.ToConcurrentDictionary();
         }
 
         public async Task<ConcurrentDictionary<string, string>> HashGetFieldsAsync(string key, IEnumerable<string> fields)
         {
-            return (await _redisDatabase.HashGetAsync(key, fields.ToRedisValues())).ToConcurrentDictionary(fields);
+            var result = await _redisDatabase.HashGetAsync(key, fields.ToRedisValues());
+            return result.ToConcurrentDictionary(fields);
         }
 
         public async Task HashSetAsync(string key, ConcurrentDictionary<string, string> entries)
@@ -140,9 +140,6 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
 
             var hs = await HashGetAsync(key);
             foreach (var field in fields)
-                //if(!hs.ContainsKey(field.Key))
-                //    continue;
-
                 hs[field.Key] = field.Value;
 
             await HashSetAsync(key, hs);
@@ -150,7 +147,7 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
 
         public async Task<bool> KeyDeleteAsync(string key)
         {
-            return await KeyDeleteAsync(new[] {key}) > 0;
+            return await KeyDeleteAsync(new[] { key }) > 0;
         }
 
         public async Task<bool> HashDeleteFieldsAsync(string key, IEnumerable<string> fields)
@@ -170,8 +167,7 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
 
         public IEnumerable<string> GetAllKeys()
         {
-            return _connectionMultiplexer.GetEndPoints().Select(endPoint => _connectionMultiplexer.GetServer(endPoint))
-                .SelectMany(server => server.Keys().ToStrings());
+            return _connectionMultiplexer.GetEndPoints().Select(endPoint => _connectionMultiplexer.GetServer(endPoint)).SelectMany(server => server.Keys().ToStrings());
         }
 
         public IEnumerable<string> GetAllKeys(EndPoint endPoint)
@@ -186,7 +182,7 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
 
         public async Task<long> KeyDeleteAsync(IEnumerable<string> keys)
         {
-            return await _redisDatabase.KeyDeleteAsync(keys.Select(k => (RedisKey) k).ToArray());
+            return await _redisDatabase.KeyDeleteAsync(keys.Select(k => (RedisKey)k).ToArray());
         }
 
 
@@ -217,7 +213,9 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
                 var batch = _redisDatabase.CreateBatch();
 
                 foreach (var operation in operations)
+                {
                     operation();
+                }
 
                 batch.Execute();
             });
@@ -301,6 +299,7 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
         {
             using var waitHandle = new AutoResetEvent(false);
             var timer = new Timer(1000);
+
             timer.Elapsed += (s, e) =>
             {
                 if (!_redisDatabase.LockTake(key, value, expiry))
@@ -310,7 +309,10 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
                     waitHandle?.Set();
                     timer?.Stop();
                 }
-                catch { }
+                catch
+                {
+                    //nothing
+                }
             };
             timer.Start();
 

@@ -18,10 +18,7 @@ namespace Sample.AzureRedis.Worker
                 .ConfigureServices((hostContext, services) =>
                 {
                     services.AddHostedService<Worker>();
-                    services.AddSingleton<IConnectionMultiplexer>(cm =>
-                    {
-                        return ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("RedisConnection"));
-                    });
+                    services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(hostContext.Configuration.GetConnectionString("RedisConnection")));
                     services.AddSingleton<IRedisCacheService, RedisCacheService>();
                 });
     }

@@ -97,8 +97,7 @@ namespace Sample.AzureRedis.Api.Extensions
             return dict;
         }
 
-        public static ConcurrentDictionary<string, double> ToConcurrentDictionary(
-            this IEnumerable<SortedSetEntry> entries)
+        public static ConcurrentDictionary<string, double> ToConcurrentDictionary(this IEnumerable<SortedSetEntry> entries)
         {
             var sortedSetEntries = entries as SortedSetEntry[] ?? entries.ToArray();
             if (!sortedSetEntries.Any())
