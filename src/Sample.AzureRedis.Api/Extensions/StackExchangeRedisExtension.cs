@@ -17,10 +17,7 @@ namespace Sample.AzureRedis.Api.Extensions
 
         public static RedisValue ToRedisValue<T>(this T value)
         {
-            if (value == null)
-                return RedisValue.Null;
-
-            return value is ValueType or string ? value as string : JsonSerializer.Serialize(value);
+            return value == null ? RedisValue.Null : value is ValueType or string ? value as string : JsonSerializer.Serialize(value);
         }
 
 
@@ -32,10 +29,7 @@ namespace Sample.AzureRedis.Api.Extensions
 
         public static T ToObject<T>(this RedisValue value) where T : class
         {
-            if (value == RedisValue.Null)
-                return null;
-
-            return typeof(T) == typeof(string) ? value.ToString() as T : JsonSerializer.Deserialize<T>(value.ToString());
+            return value == RedisValue.Null ? null : typeof(T) == typeof(string) ? value.ToString() as T : JsonSerializer.Deserialize<T>(value.ToString());
         }
 
         public static IEnumerable<T> ToObjects<T>(this IEnumerable<RedisValue> values) where T : class
