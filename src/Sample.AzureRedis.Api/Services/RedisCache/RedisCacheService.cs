@@ -185,7 +185,6 @@ namespace Sample.AzureRedis.Api.Services.RedisCache
             return await _redisDatabase.KeyDeleteAsync(keys.Select(k => (RedisKey)k).ToArray());
         }
 
-
         public async Task<bool> KeyExpireAsync(string key, TimeSpan? expiry)
         {
             return await _redisDatabase.KeyExpireAsync(key, expiry);
