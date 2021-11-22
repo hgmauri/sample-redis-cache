@@ -6,4 +6,4 @@ Example of using Redis Cache in .NET 5 with StackExchange.Redis (Pub-Sub), Swagg
 - StackExchange.Redis
 - Swagger Swashbuckle 
 
-https://hgmauri.medium.com/azure-redis-cache-e-net-5-715af6a6efca
+https://henriquemauri.net/azure-redis-cache-e-net-5/
