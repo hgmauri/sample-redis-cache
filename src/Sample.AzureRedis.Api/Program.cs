@@ -1,20 +1,25 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Sample.AzureRedis.Api.Extensions;
+using Serilog;
 
-namespace Sample.AzureRedis.Api
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+var builder = WebApplication.CreateBuilder(args);
+SerilogExtensions.AddSerilog(builder.Configuration);
+builder.Host.UseSerilog(Log.Logger);
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
-    }
-}
+builder.Services.AddApiConfiguration(builder.Configuration);
+
+builder.Services.AddSwagger(builder.Configuration);
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+var app = builder.Build();
+
+app.UseApiConfiguration(app.Environment);
+
+app.UseSwaggerDoc();
+
+app.MapControllers();
+
+app.Run();
