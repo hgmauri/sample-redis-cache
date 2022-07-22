@@ -5,5 +5,6 @@ Example of using Redis Cache in .NET 6.0 with StackExchange.Redis (Pub-Sub), Swa
 - Docker
 - StackExchange.Redis
 - Swagger Swashbuckle 
+- Serilog
 
 https://henriquemauri.net/azure-redis-cache-e-net-5/
